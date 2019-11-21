@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  template:
+    spec:
+      containers:
+        - name: nginx
+          lifecycle:
+            # This "sleep" preStop hook delays the
+            # Pod shutdown until after our Ingress
+            # controller removes the matching Endpoint
+            preStop:
+              exec:
+                command:
+                  - /bin/sleep
+                  - "20"
+                    # This period should be tuned to your 
+                    # ingress/mesh update latency

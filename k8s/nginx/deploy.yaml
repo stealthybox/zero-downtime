@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    run: nginx
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      run: nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  progressDeadlineSeconds: 600
+  template:
+    metadata:
+      labels:
+        run: nginx
+        version: b
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        imagePullPolicy: IfNotPresent
+      terminationGracePeriodSeconds: 30

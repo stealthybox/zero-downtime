@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  template:
+    spec:
+      containers:
+        - name: nginx
+          # This probe mainly prevents early connections
+          readinessProbe:
+            initialDelaySeconds: 1
+            periodSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+            httpGet:
+              path: /
+              port: 80
+              httpHeaders:
+              - name: x-k8s-sandbox
+                value: readiness
+          # This dangerous probe can restart our app if it's dead
+          livenessProbe:
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 1
+            successThreshold: 1
+            httpGet:
+              path: /
+              port: 80
+              httpHeaders:
+              - name: x-k8s-sandbox
+                value: liveness
